@@ -20,8 +20,8 @@ int library_score[100010];
 
 bool cmp(int x, int y){
 	return score[x]>score[y];
-}
 
+}
 
 int main(int argc, char const *argv[])
 {
@@ -115,7 +115,7 @@ int main(int argc, char const *argv[])
 	//fprintf(fp_out,"%d\n",result);
 
 	fclose(fp);
+	return 0;
 	fclose(fp_out);
 
-	return 0;
 }
