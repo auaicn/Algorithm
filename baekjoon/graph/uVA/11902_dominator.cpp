@@ -23,6 +23,9 @@ int main(int argc, char const *argv[])
 			for (int j=0;j<N;j++)
 				scanf("%d",&board[i+1][j+1]);
 
+		visit[start_node] = true;
+
+		
 
 		printf("Case %d:\n",t+1);
 	}
