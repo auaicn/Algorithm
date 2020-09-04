@@ -16,9 +16,14 @@ vector<point> s; // for stack
 
 int cross(int, int, int, int);
 
+double square_distance(point left, point right)
+{
+	return 1.0l * (left.x - right.x) * (left.x - right.x) + 1.0l * (left.y - right.y) * (left.y - right.y);
+}
+
 double distance(point left, point right)
 {
-	return sqrt((left.x - right.x) * (left.x - right.x) + (left.y - right.y) * (left.y - right.y));
+	return sqrt(1.0l * (left.x - right.x) * (left.x - right.x) + 1.0l * (left.y - right.y) * (left.y - right.y));
 }
 
 bool linear(point std, point left, point right)
@@ -31,14 +36,6 @@ bool linear(point std, point left, point right)
 			return false;
 
 	}
-	/* previous */
-	// double 값으로 확인하면, 오류가 있을 수 있으므로,
-	// long long left_std_below = left.x - std.x;
-	// long long left_std_top = left.y - std.y;
-	// long long right_std_below = right.x - std.x;
-	// long long right_std_top = right.y - std.y;
-
-	// return left_std_top * right_std_below == left_std_below * right_std_top;
 }
 
 bool angleCmp(point left, point right)
@@ -46,11 +43,6 @@ bool angleCmp(point left, point right)
 	// regarding to pivot,
 	// it can be on same line 
 	if (linear(pivot,left,right)){
-		// printf("linear\n");
-		// printf("pivot : [%d, %d]\n",pivot.x,pivot.y);
-		// printf("left : [%d, %d]\n",left.x,left.y);
-		// printf("right : [%d, %d]\n",right.x,right.y);
-		// return distance(pivot,left) > distance(pivot, right);
 		return distance(pivot,left) < distance(pivot, right);
 	}
 	double dxLeft = left.x - pivot.x, dyLeft = left.y - pivot.y;
@@ -77,11 +69,6 @@ int cross_itself(int x1, int y1, int x2, int y2)
 	return 1LL*x1*y2 - 1LL*x2*y1;
 }
 
-double area(point criteria, point A, point B)
-{
-	return 0.5l * abs(cross_itself(A.x - criteria.x, A.y - criteria.y, B.x - criteria.x, B.y - criteria.y));
-}
-
 bool ccw(point std, point left, point right)
 {
 	switch(cross(left.x - std.x, left.y - std.y, right.x - std.x, right.y - std.y))
@@ -93,28 +80,17 @@ bool ccw(point std, point left, point right)
 
 	}
 
-	
-	// previous version
-	// angle CMP 랑 비슷한디
-	// regarding to std,
-	// it can be on same line 
-	if (linear(std,left,right)){
-		printf("linear\n");
-		// printf("std : [%d, %d]\n",std.x,std.y);
-		// printf("left : [%d, %d]\n",left.x,left.y);
-		// printf("right : [%d, %d]\n",right.x,right.y);
-		return distance(std,left) > distance(std, right);
-	}
-	double dxLeft = left.x - std.x, dyLeft = left.y - std.y;
-	double dxRight = right.x - std.x, dyRight = right.y - std.y;
+}
 
-	return atan2(dyLeft,dxLeft) > atan2(dyRight,dxRight);
-	
+double max(double x, double y){
+	return x>y?x:y;
 }
 
 int main(int argc, char const *argv[])
 {
+	// int N; scanf("%d",&N);
 	int N; scanf("%d",&N);
+
 	for (int i=0;i<N;i++){
 		struct point temp; scanf("%d %d",&temp.x,&temp.y);
 		v.push_back(temp);
@@ -185,23 +161,17 @@ int main(int argc, char const *argv[])
 		}
 
 		s.push_back(v[i++]);
-
-		// for (int j=0;j<s.size();j++);
-		// 	printf("[%d,%d] ",s[j].x,s[j].y);
-		// printf("\n");
 	}
 
-	for (int i=0;i<s.size();i++)
-		printf("[%d,%d] ",s[i].x,s[i].y);
-	printf("\n");
+	double result = -1;
 
-	double result = 0;
+	for (int i=0;i<s.size();i++){
+		for (int j=0;j<s.size();j++){
+			result = max(result,square_distance(s[i],s[j]));
+		}
+	}
 
-	point cri = s[0];
-	for (int i = 0;i<s.size()-2;i++)
-		result += area(cri,s[i+1],s[i+2]);
-	printf("result : %Lf\n",result / 50.0l);
-	printf("%lu\n",s.size());
+	printf("%lf",sqrt(result));
 
 	return 0;
 }
@@ -222,16 +192,30 @@ int main(int argc, char const *argv[])
 
 
 
+// 로버트 후드는 로빈 후드의 동생이다. 로버트 후드는 자신의 형처럼 전설적인 인물이 되기 위해 활 쏘기를 연습하고 있다.
 
+// 이번에 노팅엄에서 열린 활 쏘기 대회는 현대에 열리는 양궁과 규칙이 다르다. 양궁은 더 많은 점수를 쏜 사람이 승리하는 방식이다. 하지만, 노팅엄 활 쏘기 대회에서는 과녁에 맞은 화살 사이의 거리 중 최댓값이 가장 큰 사람이 승리한다.
 
+// 로버트 후드는 총 C발을 발사했고, 모든 화살은 과녁에 적중했다. 과녁을 이차원 평면으로, 화살은 점으로 나타낸다. 화살의 좌표가 주어졌을 때, 가장 먼 화살의 거리를 구하는 프로그램을 작성하시오.
 
+// 입력
+// 첫째 줄에 로버트 후드가 발사한 화살의 수 C (2 ≤ C ≤ 100,000)가 주어진다. 다음 C개 줄에는 화살의 좌표가 주어진다. 좌표는 정수이고, 절댓값은 1,000을 넘지 않는다.
 
+// 출력
+// 가장 먼 두 화살의 거리를 출력한다. 상대/절대 오차가 10-6 이내인 경우에만 정답이다.
 
-
-
-
-
-
-
-
-
+// 예제 입력 1 
+// 2
+// 2 2
+// -1 -2
+// 예제 출력 1 
+// 5.0
+// 예제 입력 2 
+// 5
+// -4 1
+// -100 0
+// 0 4
+// 2 -3
+// 2 300
+// 예제 출력 2 
+// 316.86590223

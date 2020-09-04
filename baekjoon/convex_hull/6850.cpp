@@ -31,14 +31,6 @@ bool linear(point std, point left, point right)
 			return false;
 
 	}
-	/* previous */
-	// double 값으로 확인하면, 오류가 있을 수 있으므로,
-	// long long left_std_below = left.x - std.x;
-	// long long left_std_top = left.y - std.y;
-	// long long right_std_below = right.x - std.x;
-	// long long right_std_top = right.y - std.y;
-
-	// return left_std_top * right_std_below == left_std_below * right_std_top;
 }
 
 bool angleCmp(point left, point right)
@@ -46,11 +38,6 @@ bool angleCmp(point left, point right)
 	// regarding to pivot,
 	// it can be on same line 
 	if (linear(pivot,left,right)){
-		// printf("linear\n");
-		// printf("pivot : [%d, %d]\n",pivot.x,pivot.y);
-		// printf("left : [%d, %d]\n",left.x,left.y);
-		// printf("right : [%d, %d]\n",right.x,right.y);
-		// return distance(pivot,left) > distance(pivot, right);
 		return distance(pivot,left) < distance(pivot, right);
 	}
 	double dxLeft = left.x - pivot.x, dyLeft = left.y - pivot.y;
@@ -79,7 +66,7 @@ int cross_itself(int x1, int y1, int x2, int y2)
 
 double area(point criteria, point A, point B)
 {
-	return 0.5l * abs(cross_itself(A.x - criteria.x, A.y - criteria.y, B.x - criteria.x, B.y - criteria.y));
+	return 0.5 * abs(cross_itself(A.x - criteria.x, A.y - criteria.y, B.x - criteria.x, B.y - criteria.y));
 }
 
 bool ccw(point std, point left, point right)
@@ -191,17 +178,26 @@ int main(int argc, char const *argv[])
 		// printf("\n");
 	}
 
-	for (int i=0;i<s.size();i++)
-		printf("[%d,%d] ",s[i].x,s[i].y);
-	printf("\n");
+	// for (int i=0;i<s.size();i++)
+	// 	printf("[%d,%d] ",s[i].x,s[i].y);
+	// printf("\n");
 
 	double result = 0;
 
 	point cri = s[0];
 	for (int i = 0;i<s.size()-2;i++)
 		result += area(cri,s[i+1],s[i+2]);
-	printf("result : %Lf\n",result / 50.0l);
-	printf("%lu\n",s.size());
+	// printf("result : %Lf\n",result / 50.0l);
+	// printf("%f\n",result);
+	// printf("result : %d\n",result/50);
+	// printf("%d\n",result);
+	// printf("%f\n",result/50.0);
+	// printf("%d\n",result/50.0);
+	// printf("result : %Lf\n",result / 50.0l);
+	// printf("%lu\n",s.size());
+	int integer = (int)result;
+	printf("%d\n",integer/50);
+
 
 	return 0;
 }

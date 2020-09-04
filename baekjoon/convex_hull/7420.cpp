@@ -18,7 +18,7 @@ int cross(int, int, int, int);
 
 double distance(point left, point right)
 {
-	return sqrt((left.x - right.x) * (left.x - right.x) + (left.y - right.y) * (left.y - right.y));
+	return sqrt(1.0l * (left.x - right.x) * (left.x - right.x) + 1.0l * (left.y - right.y) * (left.y - right.y));
 }
 
 bool linear(point std, point left, point right)
@@ -31,14 +31,6 @@ bool linear(point std, point left, point right)
 			return false;
 
 	}
-	/* previous */
-	// double 값으로 확인하면, 오류가 있을 수 있으므로,
-	// long long left_std_below = left.x - std.x;
-	// long long left_std_top = left.y - std.y;
-	// long long right_std_below = right.x - std.x;
-	// long long right_std_top = right.y - std.y;
-
-	// return left_std_top * right_std_below == left_std_below * right_std_top;
 }
 
 bool angleCmp(point left, point right)
@@ -46,11 +38,6 @@ bool angleCmp(point left, point right)
 	// regarding to pivot,
 	// it can be on same line 
 	if (linear(pivot,left,right)){
-		// printf("linear\n");
-		// printf("pivot : [%d, %d]\n",pivot.x,pivot.y);
-		// printf("left : [%d, %d]\n",left.x,left.y);
-		// printf("right : [%d, %d]\n",right.x,right.y);
-		// return distance(pivot,left) > distance(pivot, right);
 		return distance(pivot,left) < distance(pivot, right);
 	}
 	double dxLeft = left.x - pivot.x, dyLeft = left.y - pivot.y;
@@ -77,11 +64,6 @@ int cross_itself(int x1, int y1, int x2, int y2)
 	return 1LL*x1*y2 - 1LL*x2*y1;
 }
 
-double area(point criteria, point A, point B)
-{
-	return 0.5l * abs(cross_itself(A.x - criteria.x, A.y - criteria.y, B.x - criteria.x, B.y - criteria.y));
-}
-
 bool ccw(point std, point left, point right)
 {
 	switch(cross(left.x - std.x, left.y - std.y, right.x - std.x, right.y - std.y))
@@ -93,28 +75,14 @@ bool ccw(point std, point left, point right)
 
 	}
 
-	
-	// previous version
-	// angle CMP 랑 비슷한디
-	// regarding to std,
-	// it can be on same line 
-	if (linear(std,left,right)){
-		printf("linear\n");
-		// printf("std : [%d, %d]\n",std.x,std.y);
-		// printf("left : [%d, %d]\n",left.x,left.y);
-		// printf("right : [%d, %d]\n",right.x,right.y);
-		return distance(std,left) > distance(std, right);
-	}
-	double dxLeft = left.x - std.x, dyLeft = left.y - std.y;
-	double dxRight = right.x - std.x, dyRight = right.y - std.y;
-
-	return atan2(dyLeft,dxLeft) > atan2(dyRight,dxRight);
-	
 }
 
 int main(int argc, char const *argv[])
 {
+	// int N; scanf("%d",&N);
 	int N; scanf("%d",&N);
+	long long L; scanf("%lld",&L);
+
 	for (int i=0;i<N;i++){
 		struct point temp; scanf("%d %d",&temp.x,&temp.y);
 		v.push_back(temp);
@@ -191,47 +159,19 @@ int main(int argc, char const *argv[])
 		// printf("\n");
 	}
 
-	for (int i=0;i<s.size();i++)
-		printf("[%d,%d] ",s[i].x,s[i].y);
-	printf("\n");
+	// for (int i=0;i<s.size();i++)
+	// 	printf("[%d,%d] ",s[i].x,s[i].y);
+	// printf("\n");
 
 	double result = 0;
+	for (int i=0;i<s.size();i++){
+		result += distance(s[i], s[(i+1)%s.size()]);
+	}
 
-	point cri = s[0];
-	for (int i = 0;i<s.size()-2;i++)
-		result += area(cri,s[i+1],s[i+2]);
-	printf("result : %Lf\n",result / 50.0l);
-	printf("%lu\n",s.size());
+	result += M_PI * 2. * L;
+
+	long long integer = floor(result + 0.5f);
+	printf("%lld\n",integer);
 
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
