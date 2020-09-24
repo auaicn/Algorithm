@@ -6,7 +6,7 @@
 
 using namespace std;
 
-#define MAX_NODE_NUMBER (400010)
+#define MAX_NODE_NUMBER (100010)
 #define INF (1987654321)
 
 vector<int> v[MAX_NODE_NUMBER];
@@ -16,7 +16,7 @@ int first_appearance[MAX_NODE_NUMBER];
 
 int numSegtree;
 int segTreeSize;
-int segtree[800010];
+int segtree[8 * MAX_NODE_NUMBER];
 
 int min(int x, int y){
 	return x<y?x:y;
@@ -28,7 +28,7 @@ int max(int x, int y){
 
 // left right not changing
 // left right 가 내가 구하는거고
-// start end 가 처음에 1 , segTree Size 로 들어가는거다 바보야.
+// start end 가 처음에 1 , segtree Size 로 들어가는거다 바보야.
 int find(int now, int start, int end, int left, int right){
 	// printf("%d: [S[%d]-E[%d]] L[%d] R[%d]\n",now,start,end,left,right);
     if (left > end || right < start) {
@@ -39,10 +39,13 @@ int find(int now, int start, int end, int left, int right){
     }
     int left_idx = find(now*2, start, (start+end)/2, left, right);
     int right_idx = find(now*2+1, (start+end)/2+1, end, left, right);
+
     if(!left_idx)
     	return right_idx;
+
     if(!right_idx)
     	return left_idx;
+
     return depth[left_idx] < depth[right_idx] ? left_idx : right_idx;
 }
 
@@ -59,6 +62,7 @@ int dfs(int now){
 		dfs(next);
 		segtree[++numSegtree] = now;
 	}
+	return 0;
 }
 
 int main(int argc, char const *argv[])
@@ -92,14 +96,11 @@ int main(int argc, char const *argv[])
 
 	dfs(1);
 
-    int h = (int)ceil(log2(numSegtree));
-    int segTreeSize = (1 << (h+1));
+    int height = (int)ceil(log2(numSegtree));
+    int segTreeSize = (1 << height);
 
-	// int logged = log2(numSegtree);
-	// if(1 << logged == numSegtree) 
-	// 	logged--;
-	// logged++;
-	// segTreeSize = 1 << logged;
+    // printf("%d\n",height);
+    // printf("%d\n",segTreeSize);
 
 	for (int i = numSegtree - 1; i >= 0; i--){
 		segtree[segTreeSize + i] = segtree[i+1];
@@ -107,10 +108,15 @@ int main(int argc, char const *argv[])
 
 	for (int i = segTreeSize - 1; i > 0; i--)
 	{
-		if(depth[segtree[i*2]] < depth[segtree[i*2 + 1]])
+		if(segtree[i*2] && segtree[i*2 + 1]){
+			if(depth[segtree[i*2]] < depth[segtree[i*2+1]])
+				segtree[i] = segtree[i*2];
+			else
+				segtree[i] = segtree[i*2 + 1];
+		}else if (segtree[i*2])
 			segtree[i] = segtree[i*2];
 		else
-			segtree[i] = segtree[i*2 + 1];
+			segtree[i] = 0;
 	}
 
 	int M; scanf("%d",&M);
@@ -118,8 +124,6 @@ int main(int argc, char const *argv[])
 		int left,right; scanf("%d %d",&left, &right);
 		int augmentedLeft = min(first_appearance[left],first_appearance[right]);
 		int augmentedRight = max(first_appearance[left],first_appearance[right]);
-		// printf("%d\n",find(1,augmentedLeft,augmentedRight,1,segTreeSize));
-		// ROOT, START-END (initially 1-segTreeSize), LEFT-RIGHT 변하지 않는, 내가 원하는 범위값
 		printf("%d\n",find(1,1,segTreeSize,augmentedLeft,augmentedRight));
 	}
 
