@@ -44,7 +44,18 @@ bool LineCmp(Line one, Line another){
 vector<Line> verticalLines;
 vector<int> parallelLines;
 
-int find(int nodeNumber, int start, int end, int left, int right){
+int add(int nodeNumber, int start, int end, int left, int right){
+	// left right 값은 재귀돌리면서도 변하지 않음.
+	// start, end 값이 바뀌면서 분할 정복을 실행함.
+	if (end < left || right < start)
+		return 0; // out of range
+	if (left <= start && end <= right)
+		return segTree[nodeNumber];
+	
+
+}
+
+int sub(int nodeNumber, int start, int end, int left, int right){
 	// left right 값은 재귀돌리면서도 변하지 않음.
 	// start, end 값이 바뀌면서 분할 정복을 실행함.
 	if (end < left || right < start)
@@ -53,6 +64,7 @@ int find(int nodeNumber, int start, int end, int left, int right){
 		return segTree[nodeNumber];
 
 }
+
 
 
 int main(int argc, char const *argv[])
@@ -83,13 +95,9 @@ int main(int argc, char const *argv[])
 		if()
 
 	for (int i=0;i<verticalLines.size();i++){
-		Line now = verticalLines[i];
-		float key; 		// x 값
-		float bottom; 	// 낮은 y 값
-		float top; 		// 높은 y 값 
-		bool end;
+		Line line = verticalLines[i];
 
-		
+
 	}
 
 

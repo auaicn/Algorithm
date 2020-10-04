@@ -29,7 +29,6 @@ int main(int argc, char const *argv[])
 		pair<int,int> lookup = v[i];
 		int left = lookup.first;
 		int right = lookup.second;
-		// printf("i[%d] left[%d] right[%d] initial_left[%d] right_max[%d]\n",i+1,left,right,initial_left,right_max);
 		if(left > right_max){
 			// maybe seperated
 			if(initial_left != -INF)
@@ -37,7 +36,6 @@ int main(int argc, char const *argv[])
 			initial_left = left;
 			right_max = right;
 		}else{
-			// concatenate
 			right_max = max(right_max, right);
 		}
 	}
