@@ -78,8 +78,7 @@ int main(int argc, char const *argv[])
 
 	int N; scanf("%d",&N);
 	for (int i=0;i<N;i++){
-		// 선분들
-
+		// 하나의 직사각형 입력을 두개의 선분의 입력으로 처리해주자.
 		int xLeft,yLeft,xRight,yRight; scanf("%d %d %d %d",&xLeft,&yLeft,&xRight,&yRight);
 		segments.push_back(segment(xLeft,yLeft,yRight,false)); // 시작 선분
 		segments.push_back(segment(xRight,yLeft,yRight,true)); // 끝 선분 -> fourth element true
@@ -89,13 +88,15 @@ int main(int argc, char const *argv[])
 	sort(segments.begin(),segments.end(),cmp);
 
 	// 중복 되는 y값들 필터링하기y
-	int previous = yValuesRaw[0];
+	// -1 은 문제 조건 간에 도달 불가능한 y 값이다.
+	int previous = -1; 
 	sort(yValuesRaw.begin(),yValuesRaw.end());
 	for (int i = 0; i < yValuesRaw.size(); i++)
 	{
 		if(yValuesRaw[i] == previous)
 			continue;
 		else
+			// i == 0 일때 push back 해준다.
 			yValuesFiltered.push_back(yValuesRaw[i]);
 		previous = yValuesRaw[i];
 	}

@@ -8,41 +8,41 @@ using namespace std;
 
 struct segTreeNode {
 	int count;
-	float ySum;
-	float yBottom;
-	float yTop;
+	int ySum;
+	int yBottom;
+	int yTop;
 };
 
 struct segment {
-	float x;
-	float bottom;
-	float top;
+	int x;
+	int bottom;
+	int top;
 	bool end;
-	segment(float x, float bottom, float top, bool end) : x(x), bottom(bottom), top(top), end(end){
+	segment(int x, int bottom, int top, bool end) : x(x), bottom(bottom), top(top), end(end){
 
 	}
 };
 
 bool cmp( segment one, segment another){
-	return one.x < another.x;
+	return one.x<another.x;
 }
 
 vector<segment> segments;
-vector<float> yValuesRaw;
-vector<float> yValuesFiltered;
+vector<int> yValuesRaw;
+vector<int> yValuesFiltered;
 
 struct segTreeNode segmentTree[200010];
 
 // start, end not changed
 // also endSegment not changed
-void updateTree(int nodeNumber, float start, float end, bool endSegment){
+void updateTree(int nodeNumber, int start, int end, bool endSegment){
 
 	struct segTreeNode temp = segmentTree[nodeNumber];
 
 	int count = temp.count;
-	float ySum = temp.ySum;
-	float yBottom = temp.yBottom;
-	float yTop = temp.yTop;
+	int ySum = temp.ySum;
+	int yBottom = temp.yBottom;
+	int yTop = temp.yTop;
 
 	if(yTop <= start || end <= yBottom)
 		// 원하는 y 구간 밖으로 나간 경우.
@@ -79,9 +79,18 @@ int main(int argc, char const *argv[])
 	int N; scanf("%d",&N);
 	for (int i=0;i<N;i++){
 		// 하나의 직사각형 입력을 두개의 선분의 입력으로 처리해주자.
-		float xLeft,yLeft,width,height,xRight,yRight; scanf("%f %f %f %f",&xLeft,&yLeft,&width,&height);
-		xRight = xLeft + width;
-		yRight = yLeft + height;
+		float xLeftFloat, yLeftFloat, xRightFloat, yRightFloat, widthFloat, heightFloat;
+		scanf("%f %f %f %f",&xLeftFloat,&yLeftFloat,&widthFloat,&heightFloat);
+		xRightFloat = xLeftFloat + widthFloat;
+		yRightFloat = yLeftFloat + heightFloat;
+		xLeftFloat+=0.001;
+		yLeftFloat+=0.001;
+		xRightFloat+=0.001;
+		yRightFloat+=0.001;
+		int xLeft = 10 * xLeftFloat;
+		int yLeft = 10 * yLeftFloat;
+		int xRight = 10 * xRightFloat;
+		int yRight = 10 * yRightFloat;
 		segments.push_back(segment(xLeft,yLeft,yRight,false)); // 시작 선분
 		segments.push_back(segment(xRight,yLeft,yRight,true)); // 끝 선분 -> fourth element true
 		yValuesRaw.push_back(yLeft);
@@ -91,7 +100,7 @@ int main(int argc, char const *argv[])
 
 	// 중복 되는 y값들 필터링하기y
 	// -1 은 문제 조건 간에 도달 불가능한 y 값이다.
-	float previous = -1.0; 
+	int previous = -1; 
 	sort(yValuesRaw.begin(),yValuesRaw.end());
 	for (int i = 0; i < yValuesRaw.size(); i++)
 	{
@@ -135,18 +144,18 @@ int main(int argc, char const *argv[])
 	}
 
 	// 결과값 초기화 & sweeping line 의 값을, 첫번째 선분의 x 좌표로 변경해준다.
-	float result = 0.;
-	float sweepLine = segments[0].x;
+	int result = 0;
+	int sweepLine = segments[0].x;
 	for (int i=0;i<segments.size();i++){
 		
 		// i번째 선분을 뽑아와서 now 라고 하자.
 		struct segment now = segments[i]; 
 
 		// 뽑아온 선분의 x 좌표를 가져와서 x라고 하자.
-		float x = now.x;
+		int x = now.x;
 
 		// 이전 선분과 현재 선분의 x 좌표 차이가 폭이 된다.
-		float xDiff = x - sweepLine;
+		int xDiff = x - sweepLine;
 
 		// 결과값 갱신 (+= 폭 * 높이)
 		result += xDiff * segmentTree[1].ySum;
@@ -157,12 +166,15 @@ int main(int argc, char const *argv[])
 		// 현재 선분의 y좌표 낮은 값, 높은 값, 그리고 시작, 끝 선분인지 여부를 updateTree 함수에 전달한다.
 		updateTree(1, now.bottom, now.top, now.end);
 	}
-	// printf("result : %f\n",result);
-	// printf("floor : %f\n",floor(result));
-	if(result == floor(result))
-		printf("%d\n",(int)result);
-	else
-		printf("%.2f\n",result);
+
+	if(result%100 == 0)
+	{
+		printf("%d\n",result/100);
+	}
+	else{
+		printf("%d.%02d\n",result/100,result%100);
+		// printf("%.2f\n",result/100.0);
+	}
 	return 0;
 }
 
@@ -186,24 +198,3 @@ int main(int argc, char const *argv[])
 
 
 
-
-
-
-// 밑변이 모두 x축에 평행한 N개의 직사각형이 주어질 때, 이 N개의 직사각형들이 차지하는 면적을 구하는 프로그램을 작성하시오. 여기서 주어진 직사각형들은 서로 겹칠 수도 있으며, 변이나 꼭짓점을 공유할 수도 있다.
-
-
-
-// 입력
-// 첫째 줄에 직사각형의 개수 N(1 ≤ N ≤ 30)이 주어지고 그 다음 N줄에는 각각의 직사각형에 대한 자료가 주어진다. 이 자료는 4개의 숫자로 표시되는데 첫째, 둘째 숫자는 직사각형의 왼쪽 아래 모서리의 x좌표, y좌표이고 셋째 숫자는 폭, 넷째 숫자는 높이를 나타낸다. 각 수는 최대 소수점 이하 한 자리까지 주어지며, 1000.0보다 작거나 같은 양의 실수이다.
-
-// 출력
-// 첫째 줄에 N개의 직사각형이 차지하는 면적을 소수점 이하 2자리까지 출력한다. 단, 값이 소수 부분이 없이 정수로 맞아떨어지는 경우는 정수 부분만 출력한다.
-
-// 예제 입력 1 
-// 4
-// 52.7 22.9 27.3 13.3
-// 68.8 57.6 23.2 8.0
-// 20.0 48.0 37.0 23.5
-// 41.5 36.2 27.3 21.4
-// 예제 출력 1 
-// 1853.61

@@ -57,7 +57,7 @@ void dfs(int now, int weight_so_far){
 int main(int argc, char const *argv[])
 {
 	int N; scanf("%d",&N);
-	for (int i=0;i<N - 1;i++){
+	for (int i=0 ;i < N-1; i++){
 		int left,right,weight; scanf("%d %d %d",&left,&right,&weight);
 		v[left].push_back({right,weight});
 		v[right].push_back({left,weight});
