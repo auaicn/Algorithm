@@ -22,41 +22,26 @@ int main(){
   for (int i=0;i<moves.size();i++){
     result.push_back(v[popIndex]);
 
-    int move = moves[popIndex];
+    int move = moves[v[popIndex]];
 
-    // 이제는 v.size() - 1 개
-    // move : -N to N
-
-    // -3 은 무엇과 같을까
-    // 1 2 3 4 5
-    // 3 터드렷는데 + 1이면
-    // 1 2 4 5 에서
-    // 4가 나와야 하는데
-    // - 3 과 같은것
-    // -3 은 + 1 과 같다.
-
-    // 1 2 3 4 5
-    // 1 2 4 5
-
-    // + 1 이었으면 4
-    // -3 이랑 같다.
-
-    // 4 기준 시작으로 하면 +1 이 상쇄 되어야 하니까
-
-    int size = v.size() -1;
-
-    if (size == 0) break;
-
-    move = (((move > 0 ? move - 1 : move + 1)) + size) % size; // now in 0 to v.size() - 1 // fit ! // 0 이 적혀있지는 않은가본데
+    // 우선 우측에 있던 애를 기준으로 바꾼다.
+    // move 가 1 인경우, 0 이 되어야 한다.
+    // move 가 음수인 경우 유지한다.
+    // 새로운 size 가 4 인 경우, move -1 은 move 3 과 동일하다.
+    // size 자체가 작은 경우 나가지 않도록 size 로 나머지 연산을 진행한다.
 
     vector<int> next;
 
     for (int i=popIndex + 1; i<v.size();i++) next.push_back(v[i]);
     for (int i=0; i<popIndex;i++) next.push_back(v[i]);
 
-    v = next;
+    int nextSize = next.size();
 
-    popIndex = move;
+    if (nextSize == 0) break;
+
+    popIndex = ((move > 0 ? move - 1 : move) + nextSize * N) % nextSize; // now in 0 to v.size() - 1 // fit ! // 0 이 적혀있지는 않은가본데
+
+    v = next;
   }
 
   for (int i=0;i<result.size();i++){
